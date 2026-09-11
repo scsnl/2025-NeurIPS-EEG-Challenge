@@ -208,7 +208,7 @@ scheduler.
 The two tracks are independent and share nothing but the raw data. Run whichever
 you need.
 
-### Scikit-learn Pipeline
+### scikit-learn Pipeline
 
 **1. Preprocess.** Turn the raw BIDS recordings into arrays.
 
@@ -249,7 +249,7 @@ python experiments/challenge1/ensembling_test.py --regressor mean <pickles...>
 **4. Bundle.** [`submission/README.md`](submission/README.md) describes the
 layout Codabench expects, which is strict and easy to get wrong.
 
-### Pytorch pipeline
+### PyTorch pipeline
 
 > [!NOTE]
 > This track does not use step 1 above. `pipelines/train_*.py` reads the BIDS
