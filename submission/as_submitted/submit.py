@@ -14,7 +14,7 @@ def submit(*, o, e, J, path,
         else:
             python_run = f"{path} {' '.join(args)}"
         command = (
-            'source /oak/stanford/groups/menon/projects/branigan/2025_eeg_challenge/scripts/environment.sh;'
+            'source /oak/stanford/groups/menon/projects/<user>/2025_eeg_challenge/scripts/environment.sh;'
             f'sbatch -p {part} -a {a} -n 1 '
             f'-c {c} --mem-per-cpu {mem_per_cpu} -t {t} -o {o} -e {e} -J {J} '
             f'--wrap="mprof run python {python_run}"')

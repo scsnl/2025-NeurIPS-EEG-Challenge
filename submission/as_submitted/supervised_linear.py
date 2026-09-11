@@ -21,7 +21,7 @@ from sklearn.model_selection import GridSearchCV,ParameterGrid,PredefinedSplit
 
 from tqdm import tqdm
 
-sys.path.append('/oak/stanford/groups/menon/projects/branigan/2025_eeg_challenge/scripts')
+sys.path.append('/oak/stanford/groups/menon/projects/<user>/2025_eeg_challenge/scripts')
 from utils.submit import get_job
 
 
@@ -283,7 +283,7 @@ def reshape(X):
 def load_X_y_test_fold(challenge=1):
     if challenge==2:
         raise NotImplementedError
-    path = Path('/scratch/users/branigan/2025_eeg_challenge')
+    path = Path('/scratch/users/<user>/2025_eeg_challenge')
     X = np.load(path/f'challenge{challenge}/X.npy', mmap_mode='r')
     y = np.load(path/f'challenge{challenge}/y.npy', mmap_mode='r')
     test_fold = np.load(path/f'challenge{challenge}/test_fold.npy', mmap_mode='r')
