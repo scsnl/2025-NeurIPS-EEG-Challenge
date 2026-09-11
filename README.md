@@ -205,6 +205,11 @@ We developed this on a Slurm cluster, and the launchers in `slurm/` are written
 for Slurm. The resource requests below reflect that, so adjust them for your own
 scheduler.
 
+The two tracks are independent and share nothing but the raw data. Run whichever
+you need.
+
+### Scikit-learn Pipeline
+
 **1. Preprocess.** Turn the raw BIDS recordings into arrays.
 
 ```bash
@@ -244,14 +249,69 @@ python experiments/challenge1/ensembling_test.py --regressor mean <pickles...>
 **4. Bundle.** [`submission/README.md`](submission/README.md) describes the
 layout Codabench expects, which is strict and easy to get wrong.
 
-To run the deep learning track instead:
+### Pytorch pipeline
+
+> [!NOTE]
+> This track does not use step 1 above. `pipelines/train_*.py` reads the BIDS
+> releases straight from `$EEGCHALLENGE_DATA` through braindecode, so the
+> `.npy` arrays are not needed. Pass `--cache_dataset` on the first run and
+> `--load_cached_dataset` afterwards to avoid redoing the windowing every time.
+
+These launchers need `jq`, and they request a GPU. They read the learning rate,
+weight decay, epochs, batch size, window length, and shift for each architecture
+out of `config/model_config.json`, write one temporary `.slurm` file per model,
+submit it, and delete it. So asking for several models submits several jobs.
+
+**1. Pretrain (optional).** Only if you want a self-supervised starting point
+rather than training from scratch.
 
 ```bash
-bash slurm/supervised_chal1.sh "EEGNeX,BIOT"    # or: all
-bash slurm/test_chal1_allreleases.sh EEGNeX
+bash slurm/pretraining_chal1_mae.sh EEGNeX     # masked autoencoder, 2 GPUs, up to 48 h
+bash slurm/pretraining_chal2.sh EEGNeX         # multi task across 7 HBN tasks
 ```
 
-The settings for each model come from `config/model_config.json`.
+**2. Train.** One job per model. Give a single name, a comma separated list, or
+`all` for every architecture in the config.
+
+```bash
+bash slurm/supervised_chal1.sh EEGNeX                 # one model
+bash slurm/supervised_chal1.sh "EEGNeX,BIOT,ATCNet"   # several
+bash slurm/supervised_chal1.sh all                    # all 22
+
+bash slurm/supervised_chal1_allreleases.sh EEGNeX     # same, training on R1-R11
+bash slurm/supervised_chal2_allreleases.sh EEGNeX     # challenge 2
+```
+
+Each job requests 1 GPU, 32 GB, and 2 hours. Lightning writes the best
+checkpoint as `{model_name}_supervised_best.ckpt`, plus TensorBoard and CSV
+logs, under `$EEGCHALLENGE_RESULTS`.
+
+**3. Evaluate.** Score trained checkpoints on the held out releases.
+
+```bash
+bash slurm/test_chal1_allreleases.sh EEGNeX     # or a list, or: all
+```
+
+**4. Ensemble.** Combine checkpoints across architectures, which is the deep
+learning counterpart to `pickle_top_k.py`.
+
+```bash
+bash slurm/ensemble_test_chal1.sh mean "EEGNeX,BIOT,ATCNet,Deep4Net"
+```
+
+Called with no model list it defaults to twelve architectures: ATCNet, CTNet,
+Deep4Net, EEGNet, EEGNeX, EEGSimpleConv, Labram, MSVTNet, SPARCNet, SyncNet,
+BIOT, and EEGConformer.
+
+**5. Bundle.** `submission/submission_torch.py` is the PyTorch entry point, the
+deep learning counterpart to `submission_sklearn.py`. Layout is again in
+[`submission/README.md`](submission/README.md).
+
+> [!WARNING]
+> None of these models beat chance for us. Before spending GPU hours on the full
+> sweep, read [`RETROSPECTIVE.md`](RETROSPECTIVE.md), which argues the likely
+> cause was inadequate regularisation and suggests debugging a single simple
+> model first.
 
 ## Reproducibility notes
 
