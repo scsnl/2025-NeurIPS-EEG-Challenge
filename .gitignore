@@ -1,0 +1,54 @@
+# Local path configuration (copy of config/paths.example.sh)
+config/paths.sh
+
+# Model weights and fitted pipelines are not distributed with this repository.
+# The HBN data use agreement covers derivatives; see README "Data".
+*.pt
+*.pth
+*.ckpt
+*.pkl
+*.joblib
+
+# Preprocessed arrays and other large intermediates -- these live in
+# $EEGCHALLENGE_WORK, never in the repo.
+*.npy
+*.npz
+*.h5
+*.fif
+*.bdf
+*.set
+
+# Slurm output and job artifacts
+jobs/
+logs/
+*.out
+*.err
+slurm-*.out
+temp_*.slurm
+
+# Memory profiling
+*.dat
+*.ruse
+
+# Submission bundles
+*.zip
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# Notebooks: commit source only, not outputs (see README "Contributing")
+.ipynb_checkpoints/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+
+# OMC tooling state
+.omc/

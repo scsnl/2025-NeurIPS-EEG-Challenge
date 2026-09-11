@@ -1,0 +1,138 @@
+#!/usr/bin/env python3
+"""
+Challenge 2: Pretraining with Multiple Tasks
+"""
+
+import torch
+import pytorch_lightning as pl
+import lightning as L
+from lightning.pytorch.profilers import PyTorchProfiler
+from torch.profiler import tensorboard_trace_handler
+from torch.utils.data import DataLoader
+
+from eegchallenge.models import get_model, GenericModel, MultiTaskModel
+from eegchallenge.parser import parse_args, get_config_from_args, config_call
+from eegchallenge.data import load_and_process_data 
+from eegchallenge.io import create_directories, print_config
+
+def main(config):
+
+    print_config(config, '2')
+    
+    # -------------------------------
+    # Loading dataset
+    # -------------------------------
+    
+    dirs = config_call(create_directories, config)
+    # Prepare augmentation parameters
+    augmentation_params = {"noise_std": config.get("noise_std", 0.1)} if config.get("enable_augmentation", False) else None
+    
+    # Get task list from config
+    task_list = config.get('task_list', ['contrastChangeDetection'])
+    if isinstance(task_list, str):
+        task_list = [task_list]
+    
+    print(f"Pretraining on tasks: {task_list}", flush=True)
+    
+    train_set, val_set, test_set = config_call(load_and_process_data, config, challenge=2, 
+                                             augmentation_params=augmentation_params)
+    
+    train_loader = DataLoader(train_set, batch_size=config['batch_size'], shuffle=True, num_workers=config['num_workers'],pin_memory=True,persistent_workers=True if config['num_workers']>0 else False,drop_last=True,prefetch_factor=2*config['num_workers'] if config['num_workers']>0 else 2)
+    val_loader = DataLoader(val_set, batch_size=config['batch_size'], shuffle=False, num_workers=config['num_workers'],pin_memory=True,persistent_workers=True if config['num_workers']>0 else False,drop_last=True,prefetch_factor=2*config['num_workers'] if config['num_workers']>0 else 2)
+    test_loader = DataLoader(test_set, batch_size=config['batch_size'], shuffle=False, num_workers=config['num_workers'],pin_memory=True,persistent_workers=True if config['num_workers']>0 else False,drop_last=True,prefetch_factor=2*config['num_workers'] if config['num_workers']>0 else 2)
+    
+    # -------------------------------
+    # Loading model
+    # -------------------------------
+    
+    print(f'\nModel: {config['model_name']}')
+    base_model = get_model(config['model_name'], n_chans=129, n_outputs=1, n_times=config['window_length']*100, sfreq=100)
+    loss = torch.nn.MSELoss()
+    # Use float16 for memory efficiency
+    model = GenericModel(base_model, loss=loss, optimizer='adamw',
+                        optimizer_params={'lr': config['learning_rate'], 'weight_decay': config['weight_decay']}, dtype=torch.float32)
+    
+    # -------------------------------
+    # Setting logs
+    # -------------------------------
+    
+    task_names_str = "_".join(task_list)
+    # Best model checkpoint
+    checkpoint = pl.callbacks.ModelCheckpoint(dirpath=dirs['model'], 
+                                            filename=f'{config['model_name']}_pretraining_{task_names_str}_best', 
+                                            auto_insert_metric_name=False, 
+                                            save_on_train_epoch_end=True, 
+                                            save_top_k=1)
+
+    logger = [
+        pl.loggers.TensorBoardLogger(save_dir=dirs['model'] / 'log' / 'tensorboard', 
+                                   name=f'{config['model_name']}_pretraining_{task_names_str}'),
+        pl.loggers.CSVLogger(save_dir=dirs['model'] / 'log' / 'csv', 
+                           name=f'{config['model_name']}_pretraining_{task_names_str}')
+    ]
+
+    # profiler = PyTorchProfiler(
+    #     dirpath=dirs['model'] / 'log' / 'tensorboard',
+    #     schedule=L.pytorch.profilers.profiler.schedule_for_pytorch(
+    #         wait=1, warmup=1, active=3, repeat=1
+    #     ),
+    #     on_trace_ready=tensorboard_trace_handler(dirs['model'] / 'log' / 'tensorboard'),
+    # )
+    
+    # -------------------------------
+    # Training model
+    # -------------------------------
+    
+    # Early stopping callback
+    early_stopping = pl.callbacks.EarlyStopping(monitor='val_loss', patience=config['early_stopping_patience'], mode='min', verbose=True)
+    gpu_stats = pl.callbacks.DeviceStatsMonitor()
+    
+    # Check for existing checkpoint to resume from
+    resume_dir = dirs['model']
+    latest_checkpoint = None
+    if resume_dir.exists():
+        # Find the latest checkpoint in resume directory
+        checkpoints = list(resume_dir.glob(f'{config['model_name']}_pretraining_{task_names_str}_best.ckpt'))
+        if checkpoints:
+            latest_checkpoint = max(checkpoints, key=lambda x: x.stat().st_mtime)
+            print(f"Found checkpoint to resume from: {latest_checkpoint}")
+    
+    trainer = pl.Trainer(default_root_dir=dirs['model'] / 'log', 
+                        callbacks=[checkpoint, early_stopping, gpu_stats], 
+                        logger=logger, 
+                        deterministic=True, 
+                        accelerator='auto',
+                        devices=2,
+                        strategy='ddp',
+                        max_epochs=config['num_epochs'],
+                        accumulate_grad_batches=4,
+                        precision='16-mixed')
+    
+    # Resume from checkpoint if available
+    if latest_checkpoint:
+        print(f"Resuming training from checkpoint: {latest_checkpoint}")
+        metrics = trainer.fit(model, train_loader, val_loader, ckpt_path=str(latest_checkpoint))
+    else:
+        print("Starting fresh training")
+        metrics = trainer.fit(model, train_loader, val_loader)
+    
+    # Generate loss plots
+    try:
+        from plot import plot_losses
+        csv_dir = dirs['model'] / 'log' / 'csv' / f'{config["model_name"]}_pretraining_{task_names_str}'
+        plot_losses(csv_dir)
+    except Exception as e:
+        print(f"Warning: Could not generate plots: {e}")
+    
+    # Save the final model state
+    pretrained_path = dirs['model'] / f'{config['model_name']}_challenge_2_pretraining_{task_names_str}_final.pt'
+    torch.save(model.state_dict(), pretrained_path)
+    print(f"Pretrained model saved to: {pretrained_path}")
+
+if __name__ == '__main__':
+    import mne
+    mne.set_log_level('WARNING')
+    print('Challenge 2 Pretraining', flush=True)
+    args = parse_args()
+    config = get_config_from_args(args)
+    main(config)

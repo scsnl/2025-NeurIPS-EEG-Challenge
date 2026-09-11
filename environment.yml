@@ -1,0 +1,36 @@
+# Conda environment for reproducing this work.
+#
+#     conda env create -f environment.yml
+#     conda activate 2025_eeg_challenge
+#     pip install -e .
+#
+# Versions are those the original runs used. requirements-lock.txt holds the
+# full pip freeze of that environment if you need an exact rebuild.
+#
+# Python 3.12+ is required: the code uses nested same-quote f-strings, which
+# are a syntax error on 3.11 and earlier.
+name: 2025_eeg_challenge
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13
+  - pip
+  - numpy=2.3.3
+  - scipy=1.16.0
+  - pandas=2.3.2
+  - scikit-learn=1.7.1
+  - joblib=1.5.2
+  - matplotlib=3.10.5
+  - tqdm=4.67.1
+  - pip:
+      # torch is pinned to the CUDA 12.4 build used on the GPU nodes; adjust
+      # the index URL for a different CUDA version or for CPU-only.
+      - torch==2.6.0
+      - lightning==2.5.5
+      - pytorch-lightning==2.5.5
+      - braindecode==1.2.0
+      - mne==1.10.1
+      - mne-bids==0.17.0
+      - eegdash==0.3.8
+      # optional, only for experiments/challenge2/lightgbm_*.py
+      - lightgbm

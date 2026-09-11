@@ -1,0 +1,246 @@
+{
+  "models": [
+    {
+      "model_name": "ATCNet",
+      "model_idx": 0,
+      "learning_rate": 1e-3,
+      "weight_decay": 1e-3,
+      "num_epochs": 50,
+      "batch_size": 1024,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    },
+    {
+      "model_name": "AttnSleep",
+      "model_idx": 1,
+      "learning_rate": 1e-3,
+      "weight_decay": 1e-3,
+      "num_epochs": 50,
+      "batch_size": 1024,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    },
+    {
+      "model_name": "BIOT",
+      "model_idx": 2,
+      "learning_rate": 1e-3,
+      "weight_decay": 1e-3,
+      "num_epochs": 30,
+      "batch_size": 1024,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    },
+    {
+      "model_name": "BIOT_PRE",
+      "model_idx": 20,
+      "learning_rate": 1e-3,
+      "weight_decay": 1e-3,
+      "num_epochs": 30,
+      "batch_size": 1024,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    },
+    {
+      "model_name": "CTNet",
+      "model_idx": 3,
+      "learning_rate": 1e-3,
+      "weight_decay": 1e-3,
+      "num_epochs": 50,
+      "batch_size": 1024,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    },
+    {
+      "model_name": "Deep4Net",
+      "model_idx": 4,
+      "learning_rate": 1e-3,
+      "weight_decay": 1e-3,
+      "num_epochs": 50,
+      "batch_size": 1024,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    },
+    {
+      "model_name": "EEGConformer",
+      "model_idx": 5,
+      "learning_rate": 1e-3,
+      "weight_decay": 1e-3,
+      "num_epochs": 50,
+      "batch_size": 1024,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    },
+    {
+      "model_name": "EEGNet",
+      "model_idx": 6,
+      "learning_rate": 1e-3,
+      "weight_decay": 1e-3,
+      "num_epochs": 50,
+      "batch_size": 1024,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    },
+    {
+      "model_name": "EEGNeX",
+      "model_idx": 7,
+      "learning_rate": 1e-3,
+      "weight_decay": 1e-3,
+      "num_epochs": 50,
+      "batch_size": 1024,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    },
+    {
+      "model_name": "EEGSimpleConv",
+      "model_idx": 8,
+      "learning_rate": 1e-3,
+      "weight_decay": 1e-3,
+      "num_epochs": 50,
+      "batch_size": 1024,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    },
+    {
+      "model_name": "FBCNet",
+      "model_idx": 9,
+      "learning_rate": 1e-3,
+      "weight_decay": 1e-3,
+      "num_epochs": 50,
+      "batch_size": 1024,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    },
+    {
+      "model_name": "Labram",
+      "model_idx": 10,
+      "learning_rate": 1e-3,
+      "weight_decay": 1e-3,
+      "num_epochs": 50,
+      "batch_size": 256,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    },
+    {
+      "model_name": "MSVTNet",
+      "model_idx": 11,
+      "learning_rate": 1e-3,
+      "weight_decay": 1e-3,
+      "num_epochs": 50,
+      "batch_size": 1024,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    },
+    {
+      "model_name": "SignalJEPA",
+      "model_idx": 12,
+      "learning_rate": 1e-3,
+      "weight_decay": 1e-3,
+      "num_epochs": 50,
+      "batch_size": 1024,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    },
+    {
+      "model_name": "SPARCNet",
+      "model_idx": 13,
+      "learning_rate": 1e-3,
+      "weight_decay": 1e-3,
+      "num_epochs": 50,
+      "batch_size": 1024,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    },
+    {
+      "model_name": "SyncNet",
+      "model_idx": 14,
+      "learning_rate": 1e-3,
+      "weight_decay": 1e-3,
+      "num_epochs": 50,
+      "batch_size": 1024,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    },
+    {
+      "model_name": "TSception",
+      "model_idx": 15,
+      "learning_rate": 1e-3,
+      "weight_decay": 1e-3,
+      "num_epochs": 50,
+      "batch_size": 1024,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    },
+    {
+      "model_name": "EEGPT",
+      "model_idx": 16,
+      "learning_rate": 1e-3,
+      "weight_decay": 1e-3,
+      "num_epochs": 50,
+      "batch_size": 512,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    },
+    {
+      "model_name": "AsdNet",
+      "model_idx": 1,
+      "learning_rate": 1e-2,
+      "weight_decay": 1e-4,
+      "num_epochs": 50,
+      "batch_size": 1024,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    },
+    {
+      "model_name": "eConvNet",
+      "model_idx": 1,
+      "learning_rate": 1e-2,
+      "weight_decay": 1e-4,
+      "num_epochs": 50,
+      "batch_size": 1024,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    },
+    {
+      "model_name": "stConvNet",
+      "model_idx": 1,
+      "learning_rate": 1e-2,
+      "weight_decay": 1e-4,
+      "num_epochs": 50,
+      "batch_size": 1024,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    },
+    {
+      "model_name": "ConvNet",
+      "model_idx": 1,
+      "learning_rate": 1e-2,
+      "weight_decay": 1e-4,
+      "num_epochs": 50,
+      "batch_size": 1024,
+      "window_length": 2.0,
+      "shift": 0.5,
+      "crop": 2.0
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eegchallenge"
+version = "1.0.0"
+description = "Stanford SCSNL entry to the NeurIPS 2025 EEG Foundation Challenge"
+readme = "README.md"
+license = { file = "LICENSE" }
+# 3.12+ required: the code uses nested same-quote f-strings, e.g.
+# f'{config['model_name']}', which is a syntax error on 3.11 and earlier.
+requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = [
+    "numpy>=2.0",
+    "scipy>=1.16",
+    "pandas>=2.2",
+    "scikit-learn>=1.7",
+    "joblib>=1.5",
+    "matplotlib>=3.10",
+    "tqdm>=4.67",
+    "torch>=2.6",
+    "lightning>=2.5",
+    "pytorch-lightning>=2.5",
+    "braindecode>=1.2",
+    "mne>=1.10",
+    "mne-bids>=0.17",
+    "eegdash>=0.3.8",
+]
+
+[project.optional-dependencies]
+# Only needed for experiments/challenge2/lightgbm_*.py
+lightgbm = ["lightgbm>=4.0"]
+# Memory profiling used during development (scripts/memory_profile in the
+# original tree); not needed to reproduce results.
+profiling = ["memory-profiler"]
+
+[project.urls]
+"Challenge" = "https://eeg2025.github.io/"
+"Challenge paper" = "https://arxiv.org/abs/2506.19141"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
