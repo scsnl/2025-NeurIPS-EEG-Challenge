@@ -390,13 +390,13 @@ single parameterised script would have erased it.
 - Anthony Strock ([@a-strock](https://github.com/a-strock))
 - Nicholas Branigan ([@nkbranigan](https://github.com/nkbranigan))
 - Saksham Pruthi ([@Consilium5128](https://github.com/Consilium5128))
-- Tong Shan ([@TongShan4869](https://github.com/TongShan4869))
 - Linjing Jiang ([@linjjiang](https://github.com/linjjiang))
+- Tong Shan ([@TongShan4869](https://github.com/TongShan4869))
 
 [Stanford Cognitive and Systems Neuroscience Laboratory](https://scsnl.stanford.edu)
 
 ## Citation
 
-If you use this code, please cite the challenge paper
+If you use this code, please cite this repo with the challenge paper
 ([arXiv:2506.19141](https://arxiv.org/abs/2506.19141)) and acknowledge the
 Healthy Brain Network dataset.
