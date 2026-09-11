@@ -58,7 +58,7 @@ Both tasks are challenging, as they require cross-subject transfer as well as cr
 
 ## Approaches
 
-We started with the simplest model that could work and added complexity to test which model and approach has a better performance.
+Our approaches range from the simplest linear model that could work to complex deep neural networks and foundation models:
 
 | | Approach | Where |
 | --- | --- | --- |
@@ -81,6 +81,10 @@ for each search are in [`experiments/README.md`](experiments/README.md).
 > [!NOTE]
 > That 0.950 is measured on the validation split, not on held out data. See
 > [Reproducibility notes](#reproducibility-notes) for why it flatters the model.
+
+[`RETROSPECTIVE.md`](RETROSPECTIVE.md) is a longer look back at what worked,
+what did not, and what we would do differently. The deep networks never beat
+chance, and why they did not is the most interesting open question here.
 
 ### Classical machine learning
 
